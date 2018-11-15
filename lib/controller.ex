@@ -1,7 +1,7 @@
 defmodule Skeleton.Controller do
   import Plug.Conn
 
-  defmacro __using__(_opts) do
+  defmacro __using__(_) do
     alias Skeleton.Controller, as: Ctrl
 
     quote do
