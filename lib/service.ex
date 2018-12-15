@@ -21,7 +21,7 @@ defmodule Skeleton.Service do
   end
 
   def begin_transaction(service) do
-    run(Multi.new(), :service, &init(&1, service))
+    run(Multi.new(), :service, &init(&1, &2, service))
   end
 
   def run(multi, name, fun) do
@@ -41,5 +41,5 @@ defmodule Skeleton.Service do
     end
   end
 
-  def init(_changes, service), do: {:ok, service}
+  def init(_repo, _changes, service), do: {:ok, service}
 end
