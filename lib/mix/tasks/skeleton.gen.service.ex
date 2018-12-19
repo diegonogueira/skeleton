@@ -299,7 +299,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Service do
   end
 
   try do
-    embed_template(:service_create, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/service/service_create_template.eex", __DIR__))
+    embed_template(:service_create, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/service/service_create_test_template.eex", __DIR__))
   rescue
     _ ->
 
