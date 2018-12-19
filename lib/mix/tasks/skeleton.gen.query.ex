@@ -82,7 +82,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Query do
 
 
   try do
-    embed_template(:query, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/query/query_test_template.eex", __DIR__))
+    embed_template(:query_test, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/query/query_test_template.eex", __DIR__))
   rescue
     _ ->
 
