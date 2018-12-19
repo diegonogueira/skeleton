@@ -105,162 +105,210 @@ defmodule Mix.Tasks.Skeleton.Gen.Controller do
 
   # Templates
 
-  embed_template(:controller, """
-  defmodule <%= @lib_name %>Web.<%= @mod %>Controller do
-    use <%= @lib_name %>Web.Controller
-    alias <%= @lib_name %>Web.<%= @mod %>Permission
-    alias <%= @lib_name %>.<%= @context %>
-    alias <%= @lib_name %>.<%= @context %>.<%= @mod %>
+  try do
+    embed_template(:query, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/controller/controller_template.eex", __DIR__))
+  rescue
+    _ ->
 
-    def index(conn, _params) do
-      conn
-      |> ensure_authenticated()
-      |> resolve(fn conn ->
-        <%= @plural_name %> = <%= @context %>.list_<%= @plural_name %>()
-        render(conn, "index.html", <%= @plural_name %>: <%= @plural_name %>)
-      end)
+    embed_template(:controller, """
+    defmodule <%= @lib_name %>Web.<%= @mod %>Controller do
+      use <%= @lib_name %>Web.Controller
+      alias <%= @lib_name %>Web.<%= @mod %>Permission
+      alias <%= @lib_name %>.<%= @context %>
+      alias <%= @lib_name %>.<%= @context %>.<%= @mod %>
+
+      def index(conn, _params) do
+        conn
+        |> ensure_authenticated()
+        |> resolve(fn conn ->
+          <%= @plural_name %> = <%= @context %>.list_<%= @plural_name %>()
+          render(conn, "index.html", <%= @plural_name %>: <%= @plural_name %>)
+        end)
+      end
+
+      def show(conn, %{"id" => id}) do
+        conn
+        |> ensure_authenticated()
+        |> assign_resource()
+        |> resolve(fn conn ->
+          render(conn, "show.html", <%= @singular_name %>: conn.assigns.resource)
+        end)
+      end
+
+      def new(conn, _params) do
+        conn
+        |> ensure_authenticated()
+        |> check_permission(<%= @mod %>Permission, :can_create)
+        |> resolve(fn conn ->
+          changeset = <%= @context %>.change_<%= @singular_name %>(%<%= @mod %>{})
+          render conn, "new.html", changeset: changeset
+        end)
+      end
+
+      def create(conn, %{"<%= @singular_name %>" => <%= @singular_name %>}) do
+        conn
+        |> ensure_authenticated()
+        |> check_permission(<%= @mod %>Permission, :can_create)
+        |> resolve(fn conn ->
+          with {:ok, _} <- <%= @context %>.create_<%= @singular_name %>(conn.assigns.current_user, ad) do
+            conn
+            |> put_flash(:success, gettext("Success!"))
+            |> redirect(to: Routes.<%= @singular_name %>_path(conn, :show, conn.assigns.resource))
+          end
+        end)
+      end
+
+      def edit(conn, %{"id" => id}) do
+        conn
+        |> ensure_authenticated()
+        |> assign_resource()
+        |> check_permission(<%= @mod %>Permission, :can_update)
+        |> resolve(fn conn ->
+          changeset = <%= @context %>.change_<%= @singular_name %>(conn.assigns.resource)
+          render(conn, "edit.html", <%= @singular_name %>: conn.assigns.resource, changeset: changeset)
+        end)
+      end
+
+      def update(conn, %{"id" => _id, "<%= @singular_name %>" => <%= @singular_name %>_params}) do
+        conn
+        |> ensure_authenticated()
+        |> assign_resource()
+          |> check_permission(<%= @mod %>Permission, :can_update)
+        |> resolve(fn conn ->
+          with {:ok, _} <- <%= @context %>.update_<%= @singular_name %>(conn.assigns.resource, user_params) do
+            conn
+            |> put_flash(:success, "Updated!")
+            |> redirect(to: Routes.<%= @singular_name %>_path(conn, :show, conn.assigns.resource))
+          end
+        end)
+      end
+
+      def delete(conn, %{"id" => _id}) do
+        conn
+        |> ensure_authenticated()
+        |> assign_resource()
+        |> check_permission(<%= @mod %>Permission, :can_delete)
+        |> resolve(fn conn ->
+          with {:ok, _} <- <%= @context %>.delete_<%= @singular_name %>(conn.assigns.resource) do
+            conn
+            |> put_flash(:success, "Deleted!")
+            |> redirect(to: Routes.<%= @singular_name %>_path(conn, :index))
+          end
+        end)
+      end
+
+      # Helpers
+
+      defp assign_resource(%{params: %{"id" => id}} = conn) do
+        put_resource(conn, <%= @context %>.get_user!(id))
+      end
     end
-
-    def show(conn, %{"id" => id}) do
-      conn
-      |> ensure_authenticated()
-      |> assign_resource()
-      |> resolve(fn conn ->
-        render(conn, "show.html", <%= @singular_name %>: conn.assigns.resource)
-      end)
-    end
-
-    def new(conn, _params) do
-      conn
-      |> ensure_authenticated()
-      |> check_permission(<%= @mod %>Permission, :can_create)
-      |> resolve(fn conn ->
-        changeset = <%= @context %>.change_<%= @singular_name %>(%<%= @mod %>{})
-        render conn, "new.html", changeset: changeset
-      end)
-    end
-
-    def create(conn, %{"<%= @singular_name %>" => <%= @singular_name %>}) do
-      conn
-      |> ensure_authenticated()
-      |> check_permission(<%= @mod %>Permission, :can_create)
-      |> resolve(fn conn ->
-        with {:ok, _} <- <%= @context %>.create_<%= @singular_name %>(conn.assigns.current_user, ad) do
-          conn
-          |> put_flash(:success, gettext("Success!"))
-          |> redirect(to: Routes.<%= @singular_name %>_path(conn, :show, conn.assigns.resource))
-        end
-      end)
-    end
-
-    def edit(conn, %{"id" => id}) do
-      conn
-      |> ensure_authenticated()
-      |> assign_resource()
-      |> check_permission(<%= @mod %>Permission, :can_update)
-      |> resolve(fn conn ->
-        changeset = <%= @context %>.change_<%= @singular_name %>(conn.assigns.resource)
-        render(conn, "edit.html", <%= @singular_name %>: conn.assigns.resource, changeset: changeset)
-      end)
-    end
-
-    def update(conn, %{"id" => _id, "<%= @singular_name %>" => <%= @singular_name %>_params}) do
-      conn
-      |> ensure_authenticated()
-      |> assign_resource()
-      |> check_permission(<%= @mod %>Permission, :can_update)
-      |> resolve(fn conn ->
-        with {:ok, _} <- <%= @context %>.update_<%= @singular_name %>(conn.assigns.resource, user_params) do
-          conn
-          |> put_flash(:success, "Updated!")
-          |> redirect(to: Routes.<%= @singular_name %>_path(conn, :show, conn.assigns.resource))
-        end
-      end)
-    end
-
-    def delete(conn, %{"id" => _id}) do
-      conn
-      |> ensure_authenticated()
-      |> assign_resource()
-      |> check_permission(<%= @mod %>Permission, :can_delete)
-      |> resolve(fn conn ->
-        with {:ok, _} <- <%= @context %>.delete_<%= @singular_name %>(conn.assigns.resource) do
-          conn
-          |> put_flash(:success, "Deleted!")
-          |> redirect(to: Routes.<%= @singular_name %>_path(conn, :index))
-        end
-      end)
-    end
-
-    # Helpers
-
-    defp assign_resource(%{params: %{"id" => id}} = conn) do
-      put_resource(conn, <%= @context %>.get_user!(id))
-    end
+    """)
   end
-  """)
 
-  embed_template(:view, """
-  defmodule <%= @lib_name %>Web.<%= @mod %>View do
-    use <%= @lib_name %>Web, :view
+  try do
+    embed_template(:view, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/controller/view_template.eex", __DIR__))
+  rescue
+    _ ->
+
+    embed_template(:view, """
+    defmodule <%= @lib_name %>Web.<%= @mod %>View do
+      use <%= @lib_name %>Web, :view
+    end
+    """)
   end
-  """)
 
-  embed_template(:index, """
-  <%%= for <%= @singular_name %> <- <%= @plural_name %> do %>
+  try do
+    embed_template(:index, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/controller/index_template.eex", __DIR__))
+  rescue
+    _ ->
+
+    embed_template(:index, """
     <%%= for <%= @singular_name %> <- <%= @plural_name %> do %>
-    <%= for {key, _label, _input, _error} <- @inputs do %>
-    <%%= <%= @singular_name %>.<%= key  %> %>
-    <% end %>
+      <%%= for <%= @singular_name %> <- <%= @plural_name %> do %>
+      <%= for {key, _label, _input, _error} <- @inputs do %>
+      <%%= <%= @singular_name %>.<%= key  %> %>
+      <% end %>
 
-    <%%= link "Show", to: Routes.<%= @singular_name %>_path(@conn, :show, <%= @singular_name %>) %>
-    <%%= link "Edit", to: Routes.<%= @singular_name %>_path(@conn, :edit, <%= @singular_name %>) %>
-    <%%= link "Delete", to: Routes.<%= @singular_name %>_path(@conn, :delete, <%= @singular_name %>), method: :delete, data: [confirm: "Are you sure?"] %>
-    <hr>
-  <%% end %>
-  """)
-
-  embed_template(:show, """
-  <%= for {key, _label, _input, _error} <- @inputs do %>
-  <%%= @<%= @singular_name %>.<%= key  %> %>
-  <% end %>
-
-  <%%= link "Edit", to: Routes.<%= @singular_name %>_path(@conn, :edit, @<%= @singular_name %>) %>
-  <%%= link "Back", to: Routes.<%= @singular_name %>_path(@conn, :index) %>
-  """)
-
-  embed_template(:edit, """
-  <%%= render "form.html", Map.put(assigns, :action, Routes.<%= @singular_name %>_path(@conn, :update, @<%= @singular_name %>)) %>
-
-  <%%= link "Back", to: Routes.<%= @singular_name %>_path(@conn, :index) %>
-  """)
-
-  embed_template(:new, """
-  <%%= render "form.html", Map.put(assigns, :action, Routes.<%= @singular_name %>_path(@conn, :create)) %>
-
-  <%%= link "Back", to: Routes.<%= @singular_name %>_path(@conn, :index) %>
-  """)
-
-  embed_template(:form, """
-  <%%= form_for @changeset, @action, fn f -> %>
-    <%%= if @changeset.action do %>
-      <div class="alert alert-danger">
-        <p>Oops, something went wrong! Please check the errors below.</p>
-      </div>
+      <%%= link "Show", to: Routes.<%= @singular_name %>_path(@conn, :show, <%= @singular_name %>) %>
+      <%%= link "Edit", to: Routes.<%= @singular_name %>_path(@conn, :edit, <%= @singular_name %>) %>
+      <%%= link "Delete", to: Routes.<%= @singular_name %>_path(@conn, :delete, <%= @singular_name %>), method: :delete, data: [confirm: "Are you sure?"] %>
+      <hr>
     <%% end %>
+    """)
+  end
 
-    <%= for {_key, label, input, error} <- @inputs do %>
-    <%= label %>
-    <%= input %>
-    <%= error %>
+  try do
+    embed_template(:show, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/controller/show_template.eex", __DIR__))
+  rescue
+    _ ->
+
+    embed_template(:show, """
+    <%= for {key, _label, _input, _error} <- @inputs do %>
+    <%%= @<%= @singular_name %>.<%= key  %> %>
     <% end %>
 
-    <%%= submit "Save" %>
-  <%% end %>
-  """)
+    <%%= link "Edit", to: Routes.<%= @singular_name %>_path(@conn, :edit, @<%= @singular_name %>) %>
+    <%%= link "Back", to: Routes.<%= @singular_name %>_path(@conn, :index) %>
+    """)
+  end
 
-  embed_template(:controller_test, """
-  """)
+  try do
+    embed_template(:edit, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/controller/edit_template.eex", __DIR__))
+  rescue
+    _ ->
+
+    embed_template(:edit, """
+    <%%= render "form.html", Map.put(assigns, :action, Routes.<%= @singular_name %>_path(@conn, :update, @<%= @singular_name %>)) %>
+
+    <%%= link "Back", to: Routes.<%= @singular_name %>_path(@conn, :index) %>
+    """)
+  end
+
+  try do
+    embed_template(:new, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/controller/new_template.eex", __DIR__))
+  rescue
+    _ ->
+
+    embed_template(:new, """
+    <%%= render "form.html", Map.put(assigns, :action, Routes.<%= @singular_name %>_path(@conn, :create)) %>
+
+    <%%= link "Back", to: Routes.<%= @singular_name %>_path(@conn, :index) %>
+    """)
+  end
+
+  try do
+    embed_template(:form, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/controller/form_template.eex", __DIR__))
+  rescue
+    _ ->
+
+    embed_template(:form, """
+    <%%= form_for @changeset, @action, fn f -> %>
+      <%%= if @changeset.action do %>
+        <div class="alert alert-danger">
+          <p>Oops, something went wrong! Please check the errors below.</p>
+        </div>
+      <%% end %>
+
+      <%= for {_key, label, input, error} <- @inputs do %>
+      <%= label %>
+      <%= input %>
+      <%= error %>
+      <% end %>
+
+      <%%= submit "Save" %>
+    <%% end %>
+    """)
+  end
+
+  try do
+    embed_template(:controller_test, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/controller/controller_test_template.eex", __DIR__))
+  rescue
+    _ ->
+
+    embed_template(:controller_test, """
+    """)
+  end
 
   defp parse_inputs(raw_inputs) do
     raw_inputs
