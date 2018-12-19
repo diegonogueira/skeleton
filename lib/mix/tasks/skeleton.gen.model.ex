@@ -80,45 +80,63 @@ defmodule Mix.Tasks.Skeleton.Gen.Model do
 
   # Templates
 
-  embed_template(:model, """
-  defmodule <%= @lib_name %>.<%= @context %>.<%= @mod %> do
-    use <%= @lib_name %>.Model
+  try do
+    embed_template(:model, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/model/model_template.eex", __DIR__))
+  rescue
+    _ ->
 
-    schema "<%= @plural_name %>" do
+    embed_template(:model, """
+    defmodule <%= @lib_name %>.<%= @context %>.<%= @mod %> do
+      use <%= @lib_name %>.Model
+
+      schema "<%= @plural_name %>" do
+      <%= for {field, type} <- @fields do %>
+        field :<%= field %>, <%= type %><% end %>
+      <%= for {field, _type, schema} <- @assocs do %>
+        belongs_to :<%= field %>, <%= schema %><% end %>
+        timestamps()
+      end
+    end
+    """)
+  end
+
+  try do
+    embed_template(:migration, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/model/migration_template.eex", __DIR__))
+  rescue
+    _ ->
+
+    embed_template(:migration, """
+    defmodule <%= @lib_name %>.Repo.Migrations.Create<%= @mod %> do
+      use Ecto.Migration
+
+      def change do
+        create table(:<%= @plural_name %>) do
     <%= for {field, type} <- @fields do %>
-      field :<%= field %>, <%= type %><% end %>
-    <%= for {field, _type, schema} <- @assocs do %>
-      belongs_to :<%= field %>, <%= schema %><% end %>
-      timestamps()
+        add :<%= field %>, <%= type %><% end %>
+    <%= for {field, _type, _} <- @assocs do %>
+        add :<%= field %>_id, references(:<%= @plural_name %>)<% end %>
+        timestamps()
+      end
     end
+    """)
   end
-  """)
 
-  embed_template(:migration, """
-  defmodule <%= @lib_name %>.Repo.Migrations.Create<%= @mod %> do
-    use Ecto.Migration
+  try do
+    embed_template(:model_test, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/model/model_test_template.eex", __DIR__))
+  rescue
+    _ ->
 
-    def change do
-      create table(:<%= @plural_name %>) do
-  <%= for {field, type} <- @fields do %>
-      add :<%= field %>, <%= type %><% end %>
-  <%= for {field, _type, _} <- @assocs do %>
-      add :<%= field %>_id, references(:<%= @plural_name %>)<% end %>
-      timestamps()
+    embed_template(:model_test, """
+    defmodule <%= @lib_name %>.<%= @context %>.<%= @mod %>Test do
+      use <%= @lib_name %>.DataCase
+      # alias <%= @lib_name %>.<%= @context %>.<%= @mod %>
+
+      test "example" do
+        assert true
+      end
     end
+    """)
   end
-  """)
-
-  embed_template(:model_test, """
-  defmodule <%= @lib_name %>.<%= @context %>.<%= @mod %>Test do
-    use <%= @lib_name %>.DataCase
-    # alias <%= @lib_name %>.<%= @context %>.<%= @mod %>
-
-    test "example" do
-      assert true
-    end
-  end
-  """)
 
   defp parse_inputs(raw_inputs) do
     raw_inputs

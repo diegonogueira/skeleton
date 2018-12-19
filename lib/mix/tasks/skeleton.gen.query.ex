@@ -48,63 +48,76 @@ defmodule Mix.Tasks.Skeleton.Gen.Query do
 
   # Templates
 
-  embed_template(:query, """
-  defmodule <%= @lib_name %>.<%= @context %>.<%= @mod %>Query do
-    use <%= @lib_name %>.Query, struct: <%= @lib_name %>.<%= @context %>.<%= @mod %>, assoc: :<%= @plural_name %>
+  try do
+    embed_template(:query, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/query/query_template.eex", __DIR__))
+  rescue
+    _ ->
 
-    # Filters
+    embed_template(:query, """
+    defmodule <%= @lib_name %>.<%= @context %>.<%= @mod %>Query do
+      use <%= @lib_name %>.Query, struct: <%= @lib_name %>.<%= @context %>.<%= @mod %>, assoc: :<%= @plural_name %>
 
-    def filter_by(query, {:id, id}, _args) do
-      where(query, id: ^id)
+      # Filters
+
+      def filter_by(query, {:id, id}, _args) do
+        where(query, id: ^id)
+      end
+
+      def filter_by(query, {:ids, ids}, _args) do
+        where(query, [<%= String.first(@singular_name) %>], <%= String.first(@singular_name) %>.id in ^ids)
+      end
+
+      def filter_by(query, {:user_id, user_id}, _args) do
+        where(query, user_id: ^user_id)
+      end
+
+      def filter_by(query, _, _args), do: query
+
+      # Sort
+
+      def sort_by(query, _, _args), do: query
     end
-
-    def filter_by(query, {:ids, ids}, _args) do
-      where(query, [<%= String.first(@singular_name) %>], <%= String.first(@singular_name) %>.id in ^ids)
-    end
-
-    def filter_by(query, {:user_id, user_id}, _args) do
-      where(query, user_id: ^user_id)
-    end
-
-    def filter_by(query, _, _args), do: query
-
-    # Sort
-
-    def sort_by(query, _, _args), do: query
+    """)
   end
-  """)
 
-  embed_template(:query_test, """
-  defmodule <%= @lib_name %>.<%= @context %>.<%= @mod %>QueryTest do
-    use <%= @lib_name %>.ModelCase
-    alias <%= @lib_name %>.Query
-    alias <%= @lib_name %>.<%= @context %>.<%= @mod %>Query
 
-    setup context do
-      <%= @singular_name %> = insert(:<%= @singular_name %>)
-      user = insert(:user)
+  try do
+    embed_template(:query, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/query/query_test_template.eex", __DIR__))
+  rescue
+    _ ->
 
-      context
-      |> Map.put(:<%= @singular_name %>, <%= @singular_name %>)
-      |> Map.put(:user, user)
+    embed_template(:query_test, """
+    defmodule <%= @lib_name %>.<%= @context %>.<%= @mod %>QueryTest do
+      use <%= @lib_name %>.ModelCase
+      alias <%= @lib_name %>.Query
+      alias <%= @lib_name %>.<%= @context %>.<%= @mod %>Query
+
+      setup context do
+        <%= @singular_name %> = insert(:<%= @singular_name %>)
+        user = insert(:user)
+
+        context
+        |> Map.put(:<%= @singular_name %>, <%= @singular_name %>)
+        |> Map.put(:user, user)
+      end
+
+      # Filters
+
+      test "search filtering by id", context do
+        [<%= @singular_name %>] = %Query{params: %{id: context.<%= @singular_name %>.id}} |> <%= @mod %>Query.all
+        assert <%= @singular_name %>.id == context.<%= @singular_name %>.id
+      end
+
+      test "search filtering by ids", context do
+        [<%= @singular_name %>] = %Query{params: %{ids: [context.<%= @singular_name %>.id]}} |> <%= @mod %>Query.all
+        assert <%= @singular_name %>.id == context.<%= @singular_name %>.id
+      end
+
+      test "search filtering by user_id", context do
+        [<%= @singular_name %>] = %Query{current_user: context.user} |> <%= @mod %>Query.all
+        assert <%= @singular_name %>.id == context.<%= @singular_name %>.id
+      end
     end
-
-    # Filters
-
-    test "search filtering by id", context do
-      [<%= @singular_name %>] = %Query{params: %{id: context.<%= @singular_name %>.id}} |> <%= @mod %>Query.all
-      assert <%= @singular_name %>.id == context.<%= @singular_name %>.id
-    end
-
-    test "search filtering by ids", context do
-      [<%= @singular_name %>] = %Query{params: %{ids: [context.<%= @singular_name %>.id]}} |> <%= @mod %>Query.all
-      assert <%= @singular_name %>.id == context.<%= @singular_name %>.id
-    end
-
-    test "search filtering by user_id", context do
-      [<%= @singular_name %>] = %Query{current_user: context.user} |> <%= @mod %>Query.all
-      assert <%= @singular_name %>.id == context.<%= @singular_name %>.id
-    end
+    """)
   end
-  """)
 end
