@@ -106,7 +106,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Controller do
   # Templates
 
   try do
-    embed_template(:query, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/controller/controller_template.eex", __DIR__))
+    embed_template(:controller, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/controller/controller_template.eex", __DIR__))
   rescue
     _ ->
 
