@@ -6,7 +6,8 @@ defmodule Mix.Tasks.Skeleton.Gen.Query do
   def run(args) do
     {_opts, [lib_name, resource, plural_name | _inputs], _} = OptionParser.parse(args, switches: [])
 
-    [context, singular_name] = String.split(resource, "/")
+    resource_list = String.split(resource, "/")
+    [context, singular_name] = Enum.take(resource_list, -2)
 
     generate_query(lib_name, context, singular_name, plural_name)
     generate_query_test(lib_name, context, singular_name)

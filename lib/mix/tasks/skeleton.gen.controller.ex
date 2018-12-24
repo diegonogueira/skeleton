@@ -6,22 +6,23 @@ defmodule Mix.Tasks.Skeleton.Gen.Controller do
   def run(args) do
     {_opts, [lib_name, resource, plural_name | inputs], _} = OptionParser.parse(args, switches: [])
 
-    [context, singular_name] = String.split(resource, "/")
+    resource_list = String.split(resource, "/")
+    path = resource_list |> List.delete_at(-1) |> Enum.join("/")
+    [context, singular_name] = Enum.take(resource_list, -2)
 
     inputs =
       inputs
       |> parse_inputs()
       |> generate_html_components()
 
-    generate_controller(lib_name, context, singular_name, plural_name)
-    generate_view(lib_name, context, singular_name, plural_name)
-    generate_templates(lib_name, context, singular_name, plural_name, inputs)
-
-    # generate_controller_test(lib_name, context, singular_name, plural_name)
+    generate_controller(lib_name, context, singular_name, plural_name, path)
+    generate_view(lib_name, context, singular_name, plural_name, path)
+    generate_templates(lib_name, context, singular_name, plural_name, inputs, path)
+    # generate_controller_test(lib_name, context, singular_name, plural_name, inputs, path)
   end
 
-  defp generate_controller(lib_name, context, singular_name, plural_name) do
-    path = "lib/#{underscore(lib_name)}_web/controllers"
+  defp generate_controller(lib_name, context, singular_name, plural_name, path) do
+    path = "lib/#{underscore(lib_name)}_web/controllers/#{path}"
     base_singular_name = "#{underscore(singular_name)}_controller.ex"
     file = Path.join(path, base_singular_name)
 
@@ -38,8 +39,8 @@ defmodule Mix.Tasks.Skeleton.Gen.Controller do
     create_file(file, controller_template(contexts))
   end
 
-  defp generate_view(lib_name, context, singular_name, plural_name) do
-    path = "lib/#{underscore(lib_name)}_web/views"
+  defp generate_view(lib_name, context, singular_name, plural_name, path) do
+    path = "lib/#{underscore(lib_name)}_web/views/#{path}"
     base_singular_name = "#{underscore(singular_name)}_view.ex"
     file = Path.join(path, base_singular_name)
 
@@ -56,8 +57,8 @@ defmodule Mix.Tasks.Skeleton.Gen.Controller do
     create_file(file, view_template(contexts))
   end
 
-  defp generate_templates(lib_name, context, singular_name, plural_name, inputs) do
-    path = "lib/#{underscore(lib_name)}_web/templates/#{underscore(singular_name)}"
+  defp generate_templates(lib_name, context, singular_name, plural_name, inputs, path) do
+    path = "lib/#{underscore(lib_name)}_web/templates/#{path}/#{underscore(singular_name)}"
 
     Enum.each([:index, :show, :new, :edit, :form], fn template ->
       base_singular_name = "#{template}.html.eex"

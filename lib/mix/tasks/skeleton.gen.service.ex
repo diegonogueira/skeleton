@@ -8,7 +8,8 @@ defmodule Mix.Tasks.Skeleton.Gen.Service do
   def run(args) do
     {opts, [lib_name, resource, plural_name, action | inputs], _} = OptionParser.parse(args, switches: @switches)
 
-    [context, singular_name] = String.split(resource, "/")
+    resource_list = String.split(resource, "/")
+    [context, singular_name] = Enum.take(resource_list, -2)
 
     inputs =
       inputs

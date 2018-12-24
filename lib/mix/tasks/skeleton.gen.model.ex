@@ -6,7 +6,8 @@ defmodule Mix.Tasks.Skeleton.Gen.Model do
   def run(args) do
     {_opts, [lib_name, resource, plural_name | inputs], _} = OptionParser.parse(args, switches: [])
 
-    [context, singular_name] = String.split(resource, "/")
+    resource_list = String.split(resource, "/")
+    [context, singular_name] = Enum.take(resource_list, -2)
 
     inputs =
       inputs
@@ -40,7 +41,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Model do
 
   defp generate_migration(lib_name, context, singular_name, plural_name, inputs) do
     path = "priv/repo/migrations/"
-    base_name = "#{timestamp()}_create_#{underscore(singular_name)}_table.exs"
+    base_name = "#{timestamp()}_create_#{underscore(plural_name)}_table.exs"
     file = Path.join(path, base_name)
 
     create_directory(path)
