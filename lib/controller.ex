@@ -45,7 +45,8 @@ defmodule Skeleton.Controller do
     args =
       Map.merge(%{
         resource: conn.assigns[:resource],
-        source: conn.assigns[:source]
+        source: conn.assigns[:source],
+        current_user: conn.assigns[:current_user]
       }, Enum.into(args, %{}))
 
     if apply(module, :check, [conn, permission, args]) do
