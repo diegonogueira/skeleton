@@ -359,36 +359,36 @@ defmodule Mix.Tasks.Skeleton.Gen.Controller do
   defp generate_html_components(inputs) do
     Enum.map(inputs, fn
       {key, :integer} ->
-        {key, label(key), ~s(<%= number_input f, #{inspect(key)} %>), error(key)}
+        {key, label(key), ~s(<%= number_input f, #{key} %>), error(key)}
       {key, :float} ->
-        {key, label(key), ~s(<%= number_input f, #{inspect(key)}, step: "any" %>), error(key)}
+        {key, label(key), ~s(<%= number_input f, :#{key}, step: "any" %>), error(key)}
       {key, :decimal} ->
-        {key, label(key), ~s(<%= number_input f, #{inspect(key)}, step: "any" %>), error(key)}
+        {key, label(key), ~s(<%= number_input f, :#{key}, step: "any" %>), error(key)}
       {key, :boolean} ->
-        {key, label(key), ~s(<%= checkbox f, #{inspect(key)} %>), error(key)}
+        {key, label(key), ~s(<%= checkbox f, :#{key} %>), error(key)}
       {key, :text} ->
-        {key, label(key), ~s(<%= textarea f, #{inspect(key)} %>), error(key)}
+        {key, label(key), ~s(<%= textarea f, :#{key} %>), error(key)}
       {key, :date} ->
-        {key, label(key), ~s(<%= date_select f, #{inspect(key)} %>), error(key)}
+        {key, label(key), ~s(<%= date_select f, :#{key} %>), error(key)}
       {key, :time} ->
-        {key, label(key), ~s(<%= time_select f, #{inspect(key)} %>), error(key)}
+        {key, label(key), ~s(<%= time_select f, :#{key} %>), error(key)}
       {key, :utc_datetime} ->
-        {key, label(key), ~s(<%= datetime_select f, #{inspect(key)} %>), error(key)}
+        {key, label(key), ~s(<%= datetime_select f, :#{key} %>), error(key)}
       {key, :naive_datetime} ->
-        {key, label(key), ~s(<%= datetime_select f, #{inspect(key)} %>), error(key)}
+        {key, label(key), ~s(<%= datetime_select f, :#{key} %>), error(key)}
       {key, :array, :integer} ->
-        {key, label(key), ~s(<%= multiple_select f, #{inspect(key)}, ["1": 1, "2": 2] %>), error(key)}
+        {key, label(key), ~s(<%= multiple_select f, :#{key}, ["1": 1, "2": 2] %>), error(key)}
       {key, :array, _} ->
-        {key, label(key), ~s(<%= multiple_select f, #{inspect(key)}, ["Option 1": "option1", "Option 2": "option2"] %>), error(key)}
+        {key, label(key), ~s(<%= multiple_select f, :#{key}, ["Option 1": "option1", "Option 2": "option2"] %>), error(key)}
       {key, :references} ->
-        {key, label(key), ~s(<%= text_input f, #{inspect(key)}_id %>), error(key)}
+        {key, label(key), ~s(<%= text_input f, :#{key}_id %>), error(key)}
       {key, _} ->
-        {key, label(key), ~s(<%= text_input f, #{inspect(key)} %>), error(key)}
+        {key, label(key), ~s(<%= text_input f, :#{key} %>), error(key)}
     end)
   end
 
   defp label(key) do
-    ~s(<%= label f, #{inspect(key)} %>)
+    ~s(<%= label f, :#{key} %>)
   end
 
   defp error(field) do
