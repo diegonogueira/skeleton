@@ -13,6 +13,9 @@ defmodule Mix.Tasks.Skeleton.Gen.Html do
     Mix.Tasks.Skeleton.Gen.Service.run([lib_name, resource, plural_name, "delete"] ++ inputs)
     Mix.Tasks.Skeleton.Gen.Query.run(args)
 
+    # Create context api
+    Mix.Tasks.Skeleton.Gen.ContextAPI.run(args)
+
     # Create permission
     Mix.Tasks.Skeleton.Gen.Permission.run(args)
 

@@ -274,22 +274,6 @@ defmodule Mix.Tasks.Skeleton.Gen.Service do
         |> commit_transaction_and_return(:<%= @singular_name %>)
       end
 
-      def perform_each(service) do
-        service.resource
-        |> Ecto.assoc(:<%= @plural_name %>)
-        |> Repo.all
-        |> Enum.each(fn <%= @singular_name %> ->
-          %<%= @mod %>{
-            current_company: service.current_company,
-            current_profile: service.current_profile,
-            resource: <%= @singular_name %>
-          }
-          |> perform
-        end)
-
-        {:ok, nil}
-      end
-
       # Delete <%= @singular_name %>
 
       defp delete_<%= @singular_name %>(%{service: service}) do

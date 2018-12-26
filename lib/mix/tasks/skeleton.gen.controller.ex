@@ -15,13 +15,32 @@ defmodule Mix.Tasks.Skeleton.Gen.Controller do
       |> parse_inputs()
       |> generate_html_components()
 
-    generate_controller(lib_name, context, singular_name, plural_name, path)
+    [scope | others] = String.split(path, "/")
+    scope = if others != [], do: "#{scope}_", else: nil
+
+    generate_controller(lib_name, context, singular_name, plural_name, path, scope)
     generate_view(lib_name, context, singular_name, plural_name, path)
-    generate_templates(lib_name, context, singular_name, plural_name, inputs, path)
-    # generate_controller_test(lib_name, context, singular_name, plural_name, inputs, path)
+    generate_templates(lib_name, context, singular_name, plural_name, inputs, path, scope)
+    generate_controller_test(lib_name, context, singular_name, plural_name, inputs, path)
+
+    if scope do
+    IO.puts("""
+    \n1: Add route on #{camelize(lib_name)}Web.Router
+
+      scope "/#{String.downcase(camelize(scope))}", #{camelize(scope)}, as: :#{String.downcase(camelize(scope))} do
+        resources "/#{plural_name}", #{camelize(singular_name)}Controller
+      end
+    """)
+    else
+    IO.puts("""
+    \n1: Add route on camelize(lib_name)Web.Router
+
+      resources "/#{plural_name}", #{camelize(singular_name)}Controller
+    """)
+    end
   end
 
-  defp generate_controller(lib_name, context, singular_name, plural_name, path) do
+  defp generate_controller(lib_name, context, singular_name, plural_name, path, scope) do
     path = "lib/#{underscore(lib_name)}_web/controllers/#{path}"
     base_singular_name = "#{underscore(singular_name)}_controller.ex"
     file = Path.join(path, base_singular_name)
@@ -33,14 +52,15 @@ defmodule Mix.Tasks.Skeleton.Gen.Controller do
       context: camelize(context),
       mod: camelize(singular_name),
       singular_name: underscore(singular_name),
-      plural_name: underscore(plural_name)
+      plural_name: underscore(plural_name),
+      scope: scope
     ]
 
     create_file(file, controller_template(contexts))
   end
 
   defp generate_view(lib_name, context, singular_name, plural_name, path) do
-    path = "lib/#{underscore(lib_name)}_web/views/#{path}"
+    path = "lib/#{underscore(lib_name)}_web/views/#{underscore(singular_name)}"
     base_singular_name = "#{underscore(singular_name)}_view.ex"
     file = Path.join(path, base_singular_name)
 
@@ -57,7 +77,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Controller do
     create_file(file, view_template(contexts))
   end
 
-  defp generate_templates(lib_name, context, singular_name, plural_name, inputs, path) do
+  defp generate_templates(lib_name, context, singular_name, plural_name, inputs, path, scope) do
     path = "lib/#{underscore(lib_name)}_web/templates/#{path}/#{underscore(singular_name)}"
 
     Enum.each([:index, :show, :new, :edit, :form], fn template ->
@@ -72,7 +92,8 @@ defmodule Mix.Tasks.Skeleton.Gen.Controller do
         mod: camelize(singular_name),
         singular_name: underscore(singular_name),
         plural_name: underscore(plural_name),
-        inputs: inputs
+        inputs: inputs,
+        scope: scope
       ]
 
       # Try to run dynamically, using apply did not work
@@ -86,23 +107,23 @@ defmodule Mix.Tasks.Skeleton.Gen.Controller do
     end)
   end
 
-  # defp generate_controller_test(lib_name, context, singular_name, plural_name) do
-  #   path = "test/#{underscore(lib_name)}_web/controllers/#{context}"
-  #   base_singular_name = "#{underscore(singular_name)}_controller_test.exs"
-  #   file = Path.join(path, base_singular_name)
+  defp generate_controller_test(lib_name, context, singular_name, plural_name, _inputs, path) do
+    path = "test/#{underscore(lib_name)}_web/controllers/#{path}"
+    base_singular_name = "#{underscore(singular_name)}_controller_test.exs"
+    file = Path.join(path, base_singular_name)
 
-  #   create_directory(path)
+    create_directory(path)
 
-  #   contexts = [
-  #     lib_name: camelize(lib_name),
-  #     context: camelize(context),
-  #     mod: camelize(singular_name),
-  #     singular_name: underscore(singular_name),
-  #     plural_name: underscore(plural_name)
-  #   ]
+    contexts = [
+      lib_name: camelize(lib_name),
+      context: camelize(context),
+      mod: camelize(singular_name),
+      singular_name: underscore(singular_name),
+      plural_name: underscore(plural_name)
+    ]
 
-  #   create_file(file, controller_test_template(contexts))
-  # end
+    create_file(file, controller_test_template(contexts))
+  end
 
   # Templates
 
@@ -151,7 +172,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Controller do
         |> ensure_authenticated()
         |> check_permission(<%= @mod %>Permission, :can_create)
         |> resolve(fn conn ->
-          with {:ok, _} <- <%= @context %>.create_<%= @singular_name %>(conn.assigns.current_user, ad) do
+          with {:ok, _} <- <%= @context %>.create_<%= @singular_name %>(conn.assigns, ad) do
             conn
             |> put_flash(:success, gettext("Success!"))
             |> redirect(to: Routes.<%= @singular_name %>_path(conn, :show, conn.assigns.resource))
@@ -308,6 +329,15 @@ defmodule Mix.Tasks.Skeleton.Gen.Controller do
     _ ->
 
     embed_template(:controller_test, """
+    defmodule <%= @lib_name %>.<%= @context %>.<%= @mod %>Test do
+      use <%= @lib_name %>.ConnCase
+
+      @tag login: false
+      test "name of test", %{conn: conn} do
+        # conn = get conn, Routes.route_path(conn, :action)
+        # assert html_response(conn, 200) =~ ""
+      end
+    end
     """)
   end
 
