@@ -10,6 +10,8 @@ defmodule Mix.Tasks.Skeleton.Gen.Controller do
     path = resource_list |> List.delete_at(-1) |> Enum.join("/")
     [context, singular_name] = Enum.take(resource_list, -2)
 
+    fields = parse_inputs(inputs)
+
     inputs =
       inputs
       |> parse_inputs()
@@ -21,7 +23,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Controller do
     generate_controller(lib_name, context, singular_name, plural_name, path, scope)
     generate_view(lib_name, context, singular_name, plural_name, path)
     generate_templates(lib_name, context, singular_name, plural_name, inputs, path, scope)
-    generate_controller_test(lib_name, context, singular_name, plural_name, inputs, path)
+    generate_controller_test(lib_name, context, singular_name, plural_name, inputs, path, fields)
 
     if scope do
     IO.puts("""
@@ -107,7 +109,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Controller do
     end)
   end
 
-  defp generate_controller_test(lib_name, context, singular_name, plural_name, _inputs, path) do
+  defp generate_controller_test(lib_name, context, singular_name, plural_name, _inputs, path, fields) do
     path = "test/#{underscore(lib_name)}_web/controllers/#{path}"
     base_singular_name = "#{underscore(singular_name)}_controller_test.exs"
     file = Path.join(path, base_singular_name)
@@ -119,7 +121,8 @@ defmodule Mix.Tasks.Skeleton.Gen.Controller do
       context: camelize(context),
       mod: camelize(singular_name),
       singular_name: underscore(singular_name),
-      plural_name: underscore(plural_name)
+      plural_name: underscore(plural_name),
+      fields: fields
     ]
 
     create_file(file, controller_test_template(contexts))

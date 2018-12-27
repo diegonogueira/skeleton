@@ -50,12 +50,12 @@ defmodule Mix.Tasks.Skeleton.Gen.ContextAPI do
       change(<%= @singular_name %>, %{})
     end
 
-    def create_<%= @singular_name %>(%{assigns: %{current_user: user}}, params) do
+    def create_<%= @singular_name %>(%{current_user: user}, params) do
       struct = %<%= @mod %>Create{current_user: user, params: params}
       <%= @mod %>Create.perform(struct)
     end
 
-    def update_<%= @singular_name %>(%{assigns: %{resource: <%= @singular_name %>, current_user: user}}, params) do
+    def update_<%= @singular_name %>(%{resource: <%= @singular_name %>, current_user: user}, params) do
       struct = %<%= @mod %>Update{current_user: user, resource: <%= @singular_name %>, params: params}
       <%= @mod %>Update.perform(struct)
     end
