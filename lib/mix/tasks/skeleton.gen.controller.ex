@@ -62,7 +62,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Controller do
   end
 
   defp generate_view(lib_name, context, singular_name, plural_name, path) do
-    path = "lib/#{underscore(lib_name)}_web/views/#{underscore(singular_name)}"
+    path = "lib/#{underscore(lib_name)}_web/views/#{path}"
     base_singular_name = "#{underscore(singular_name)}_view.ex"
     file = Path.join(path, base_singular_name)
 
@@ -80,6 +80,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Controller do
   end
 
   defp generate_templates(lib_name, context, singular_name, plural_name, inputs, path, scope) do
+    path = String.split(path, "/") |> List.first()
     path = "lib/#{underscore(lib_name)}_web/templates/#{path}/#{underscore(singular_name)}"
 
     Enum.each([:index, :show, :new, :edit, :form], fn template ->
