@@ -395,6 +395,6 @@ defmodule Mix.Tasks.Skeleton.Gen.Controller do
   end
 
   defp error(field) do
-    ~s(<%= error_tag f, #{inspect(field)} %>)
+    ~s(<%= error_tag f, :#{field} %>)
   end
 end
