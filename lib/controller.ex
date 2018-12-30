@@ -23,7 +23,7 @@ defmodule Skeleton.Controller do
         check_permission(conn, module, permission, fun.(conn))
       end
       def check_permission(conn, module, permission, args) do
-        Ctrl.check_permission(conn, module, permission, args)
+        Ctrl.check_permission(conn, module, permission, args, __MODULE__)
       end
 
       def resolve(%{halted: true} = conn, _), do: conn
@@ -41,20 +41,18 @@ defmodule Skeleton.Controller do
     module.not_authenticated.call(conn, opts)
   end
 
-  def check_permission(conn, module, permission, args) do
+  def check_permission(conn, module, permission, args, controller) do
     args =
       Map.merge(%{
         resource: conn.assigns[:resource],
-        source: conn.assigns[:source],
-        current_user: conn.assigns[:current_user]
+        source: conn.assigns[:source]
       }, Enum.into(args, %{}))
 
     if apply(module, :check, [conn, permission, args]) do
       conn
     else
-      conn
-      |> put_status(:unauthorized)
-      |> halt()
+      conn = conn |> put_status(:unauthorized) |> halt()
+      controller.unauthorized(conn)
     end
   end
 
