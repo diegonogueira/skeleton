@@ -8,8 +8,9 @@ defmodule Skeleton.Service do
       alias Ecto.Multi
 
       @repo unquote(opts[:repo])
+      @ecto_version unquote(opts[:ecto_version])
 
-      def begin_transaction(service), do: Serv.begin_transaction(service)
+      def begin_transaction(service), do: Serv.begin_transaction(@ecto_version, service)
 
       def run(multi, name, fun), do: Serv.run(multi, name, fun)
 
@@ -20,8 +21,14 @@ defmodule Skeleton.Service do
     end
   end
 
-  def begin_transaction(service) do
-    run(Multi.new(), :service, &init(&1, &2, service))
+  # For Ecto 2
+  def begin_transaction("2", service) do
+    run(Multi.new(), :service, fn _changes -> {:ok, service} end)
+  end
+
+  # For latest Ecto
+  def begin_transaction(_, service) do
+    run(Multi.new(), :service, fn _repo, _changes -> {:ok, service} end)
   end
 
   def run(multi, name, fun) do
@@ -41,5 +48,5 @@ defmodule Skeleton.Service do
     end
   end
 
-  def init(_repo, _changes, service), do: {:ok, service}
+  # def init(_repo, _changes, service), do: {:ok, service}
 end
