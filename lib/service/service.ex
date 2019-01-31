@@ -16,6 +16,9 @@ defmodule Skeleton.Service do
 
       def commit_transaction(multi), do: Serv.commit_transaction(multi, @repo)
 
+      def commit_transaction_and_return(multi, func) when is_function(func, 1),
+        do: Serv.commit_transaction_and_return(multi, func, @repo)
+
       def commit_transaction_and_return(multi, resource_name),
         do: Serv.commit_transaction_and_return(multi, resource_name, @repo)
     end
@@ -37,6 +40,15 @@ defmodule Skeleton.Service do
 
   def commit_transaction(multi, repo) do
     repo.transaction(multi)
+  end
+
+  def commit_transaction_and_return(multi, func, repo) when is_function(func) do
+    multi
+    |> commit_transaction(repo)
+    |> case do
+      {:ok, _} -> {:ok, func.(multi)}
+      {:error, _, changeset, _} -> {:error, changeset}
+    end
   end
 
   def commit_transaction_and_return(multi, resource_name, repo) do
