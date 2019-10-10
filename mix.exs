@@ -13,7 +13,7 @@ defmodule Skeleton.MixProject do
       name: "Skeleton",
       app: :skeleton,
       version: @version,
-      elixir: "~> 1.7",
+      elixir: "~> 1.9.1",
       package: package(),
       source_url: @url,
       maintainers: @maintainers,

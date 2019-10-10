@@ -5,60 +5,43 @@ defmodule Skeleton.Service do
     alias Skeleton.Service, as: Serv
 
     quote do
-      alias Ecto.Multi
-
       @repo unquote(opts[:repo])
-      @ecto_version unquote(opts[:ecto_version])
 
-      def begin_transaction(service), do: Serv.begin_transaction(@ecto_version, service)
-
+      def begin_transaction(service), do: Serv.begin_transaction(service)
       def run(multi, name, fun), do: Serv.run(multi, name, fun)
-
+      def spawn_run(result, fun), do: Serv.spawn_run(result, fun)
       def commit_transaction(multi), do: Serv.commit_transaction(multi, @repo)
-
-      def commit_transaction_and_return(multi, func) when is_function(func, 1),
-        do: Serv.commit_transaction_and_return(multi, func, @repo)
-
-      def commit_transaction_and_return(multi, resource_name),
-        do: Serv.commit_transaction_and_return(multi, resource_name, @repo)
+      def return(result, resource_name), do: Serv.return(result, resource_name)
     end
   end
 
-  # For Ecto 2
-  def begin_transaction("2", service) do
-    run(Multi.new(), :service, fn _changes -> {:ok, service} end)
-  end
-
-  # For latest Ecto
-  def begin_transaction(_, service) do
-    run(Multi.new(), :service, fn _repo, _changes -> {:ok, service} end)
+  def begin_transaction(service) do
+    service
+    |> Map.from_struct()
+    |> Enum.reduce(Multi.new(), fn {key, value}, acc ->
+      run(acc, key, fn _changes ->
+        {:ok, value}
+      end)
+    end)
   end
 
   def run(multi, name, fun) do
-    Multi.run(multi, name, fun)
+    Multi.run(multi, name, fn _repo, service -> fun.(service) end)
+  end
+
+  def spawn_run({:error, _, _, _} = error, _fun), do: error
+  def spawn_run({:ok, service}, fun) do
+    # spawn fn -> fun.(service) end
+    fun.(service)
+    {:ok, service}
   end
 
   def commit_transaction(multi, repo) do
     repo.transaction(multi)
   end
 
-  def commit_transaction_and_return(multi, func, repo) when is_function(func) do
-    multi
-    |> commit_transaction(repo)
-    |> case do
-      {:ok, _} -> {:ok, func.(multi)}
-      {:error, _, changeset, _} -> {:error, changeset}
-    end
+  def return({:error, _, changeset, _}, _resource_name), do: {:error, changeset}
+  def return({:ok, service}, resource_name) do
+    {:ok, Map.get(service, resource_name)}
   end
-
-  def commit_transaction_and_return(multi, resource_name, repo) do
-    multi
-    |> commit_transaction(repo)
-    |> case do
-      {:ok, %{^resource_name => resource}} -> {:ok, resource}
-      {:error, _, changeset, _} -> {:error, changeset}
-    end
-  end
-
-  # def init(_repo, _changes, service), do: {:ok, service}
 end
