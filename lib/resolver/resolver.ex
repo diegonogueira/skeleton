@@ -91,12 +91,22 @@ defmodule Skeleton.Resolver do
 
   def resolve_mutation(%{halted: true} = resolver, _), do: {:error, resolver.error}
   def resolve_mutation(resolver, callback) do
-    output =
+    {:ok, resource} =
       resolver
       |> put_output(callback.(resolver))
       |> resolver.helper._after_resolve_mutation()
 
-    {:ok, output}
+    key = get_module_name(resource)
+
+    {:ok, %{key => resource}}
+  end
+
+  defp get_module_name(struct) do
+    struct.__struct__
+    |> Macro.underscore()
+    |> String.split("/")
+    |> List.last()
+    |> String.to_atom()
   end
 
   # Permission
@@ -117,15 +127,24 @@ defmodule Skeleton.Resolver do
   defp ensure_permission(resolver, permission_module, check, id) do
     data = resolver.resource || resolver.source || %{}
 
+    # TODO: Tratar para esses casos
+    # def preload_data(resolver) do
+    #   case resolver.permission.ids do
+    #     nil -> []
+    #     [nil] -> []
+    #     _ -> do_preload(resolver)
+    #   end
+    # end
+
     resolver = put_in(resolver.permission.checks, [check])
     resolver = put_in(resolver.permission.ids, [id || Map.get(data, :id)])
 
-    preloaded_data =
+    preloaded =
       resolver
-      |> permission_module.preload_data()
+      |> permission_module.preload()
       |> List.first()
 
-    if permission_module.check(check, preloaded_data, resolver) do
+    if permission_module.check(check, preloaded, resolver) do
       resolver
     else
       put_error(resolver, "not authorized")
