@@ -13,7 +13,7 @@ defmodule Skeleton.MixProject do
       name: "Skeleton",
       app: :skeleton,
       version: @version,
-      elixir: "~> 1.9.1",
+      elixir: "~> 1.10.3",
       package: package(),
       source_url: @url,
       maintainers: @maintainers,
@@ -34,7 +34,7 @@ defmodule Skeleton.MixProject do
   defp deps do
     [
       {:ex_doc, ">= 0.0.0", only: :dev},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.2"}
     ]
   end
 
