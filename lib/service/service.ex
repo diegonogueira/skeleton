@@ -10,7 +10,7 @@ defmodule Skeleton.Service do
       def begin_transaction(service), do: Serv.begin_transaction(service)
       def run(multi, name, fun), do: Serv.run(multi, name, fun)
       def spawn_run(result, fun), do: Serv.spawn_run(result, fun)
-      def commit_transaction(multi), do: Serv.commit_transaction(multi, @repo)
+      def commit_transaction(multi, opts \\ []), do: Serv.commit_transaction(multi, @repo, opts)
       def return(result, resource_name), do: Serv.return(result, resource_name)
     end
   end
@@ -36,8 +36,8 @@ defmodule Skeleton.Service do
     {:ok, service}
   end
 
-  def commit_transaction(multi, repo) do
-    repo.transaction(multi)
+  def commit_transaction(multi, repo, opts) do
+    repo.transaction(multi, opts)
   end
 
   def return({:error, _, changeset, _}, _resource_name), do: {:error, changeset}
