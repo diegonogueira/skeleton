@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Skeleton.Gen.Permission do
+defmodule Mix.Tasks.SkeletonLegacy.Gen.Permission do
   use Mix.Task
   import Macro, only: [camelize: 1, underscore: 1]
   import Mix.Generator
@@ -51,7 +51,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Permission do
   # Templates
 
   try do
-    embed_template(:permission, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/permission/permission_template.eex", __DIR__))
+    embed_template(:permission, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_legacy_templates/permission/permission_template.eex", __DIR__))
   rescue
     _ ->
 
@@ -68,7 +68,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Permission do
   end
 
   try do
-    embed_template(:permission_test, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/permission/permission_test_template.eex", __DIR__))
+    embed_template(:permission_test, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_legacy_templates/permission/permission_test_template.eex", __DIR__))
   rescue
     _ ->
 

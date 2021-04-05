@@ -1,8 +1,8 @@
-defmodule Skeleton.Service do
+defmodule SkeletonLegacy.Service do
   alias Ecto.Multi
 
   defmacro __using__(opts \\ []) do
-    alias Skeleton.Service, as: Serv
+    alias SkeletonLegacy.Service, as: Serv
 
     quote do
       @repo unquote(opts[:repo])

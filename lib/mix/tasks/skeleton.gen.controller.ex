@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Skeleton.Gen.Controller do
+defmodule Mix.Tasks.SkeletonLegacy.Gen.Controller do
   use Mix.Task
   import Macro, only: [camelize: 1, underscore: 1]
   import Mix.Generator
@@ -132,7 +132,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Controller do
   # Templates
 
   try do
-    embed_template(:controller, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/controller/controller_template.eex", __DIR__))
+    embed_template(:controller, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_legacy_templates/controller/controller_template.eex", __DIR__))
   rescue
     _ ->
 
@@ -233,7 +233,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Controller do
   end
 
   try do
-    embed_template(:view, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/controller/view_template.eex", __DIR__))
+    embed_template(:view, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_legacy_templates/controller/view_template.eex", __DIR__))
   rescue
     _ ->
 
@@ -245,7 +245,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Controller do
   end
 
   try do
-    embed_template(:index, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/controller/index_template.eex", __DIR__))
+    embed_template(:index, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_legacy_templates/controller/index_template.eex", __DIR__))
   rescue
     _ ->
 
@@ -265,7 +265,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Controller do
   end
 
   try do
-    embed_template(:show, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/controller/show_template.eex", __DIR__))
+    embed_template(:show, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_legacy_templates/controller/show_template.eex", __DIR__))
   rescue
     _ ->
 
@@ -280,7 +280,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Controller do
   end
 
   try do
-    embed_template(:edit, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/controller/edit_template.eex", __DIR__))
+    embed_template(:edit, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_legacy_templates/controller/edit_template.eex", __DIR__))
   rescue
     _ ->
 
@@ -292,7 +292,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Controller do
   end
 
   try do
-    embed_template(:new, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/controller/new_template.eex", __DIR__))
+    embed_template(:new, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_legacy_templates/controller/new_template.eex", __DIR__))
   rescue
     _ ->
 
@@ -304,7 +304,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Controller do
   end
 
   try do
-    embed_template(:form, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/controller/form_template.eex", __DIR__))
+    embed_template(:form, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_legacy_templates/controller/form_template.eex", __DIR__))
   rescue
     _ ->
 
@@ -328,7 +328,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Controller do
   end
 
   try do
-    embed_template(:controller_test, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/controller/controller_test_template.eex", __DIR__))
+    embed_template(:controller_test, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_legacy_templates/controller/controller_test_template.eex", __DIR__))
   rescue
     _ ->
 

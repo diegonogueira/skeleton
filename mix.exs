@@ -1,8 +1,8 @@
-defmodule Skeleton.MixProject do
+defmodule SkeletonLegacy.MixProject do
   use Mix.Project
 
   @version "1.0.0"
-  @url "https://github.com/diegonogueira/skeleton"
+  @url "https://github.com/diegonogueira/skeleton_legacy"
   @maintainers [
     "Diego Nogueira",
     "Jhonathas Matos"
@@ -10,8 +10,8 @@ defmodule Skeleton.MixProject do
 
   def project do
     [
-      name: "Skeleton",
-      app: :skeleton,
+      name: "SkeletonLegacy",
+      app: :skeleton_legacy,
       version: @version,
       elixir: "~> 1.10.3",
       package: package(),

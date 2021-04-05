@@ -1,8 +1,8 @@
-defmodule SkeletonTest do
+defmodule SkeletonLegacyTest do
   use ExUnit.Case
-  doctest Skeleton
+  doctest SkeletonLegacy
 
   test "greets the world" do
-    assert Skeleton.hello() == :world
+    assert SkeletonLegacy.hello() == :world
   end
 end

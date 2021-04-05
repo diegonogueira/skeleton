@@ -1,2 +1,2 @@
-defmodule Skeleton do
+defmodule SkeletonLegacy do
 end

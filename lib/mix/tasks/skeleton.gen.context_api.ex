@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Skeleton.Gen.ContextAPI do
+defmodule Mix.Tasks.SkeletonLegacy.Gen.ContextAPI do
   use Mix.Task
   import Macro, only: [camelize: 1, underscore: 1]
   import Mix.Generator

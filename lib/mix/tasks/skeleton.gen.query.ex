@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Skeleton.Gen.Query do
+defmodule Mix.Tasks.SkeletonLegacy.Gen.Query do
   use Mix.Task
   import Macro, only: [camelize: 1, underscore: 1]
   import Mix.Generator
@@ -50,7 +50,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Query do
   # Templates
 
   try do
-    embed_template(:query, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/query/query_template.eex", __DIR__))
+    embed_template(:query, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_legacy_templates/query/query_template.eex", __DIR__))
   rescue
     _ ->
 
@@ -83,7 +83,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Query do
 
 
   try do
-    embed_template(:query_test, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/query/query_test_template.eex", __DIR__))
+    embed_template(:query_test, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_legacy_templates/query/query_test_template.eex", __DIR__))
   rescue
     _ ->
 

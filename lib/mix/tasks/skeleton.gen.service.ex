@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Skeleton.Gen.Service do
+defmodule Mix.Tasks.SkeletonLegacy.Gen.Service do
   use Mix.Task
   import Macro, only: [camelize: 1, underscore: 1]
   import Mix.Generator
@@ -95,7 +95,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Service do
   # Templates
 
   try do
-    embed_template(:service_create, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/service/service_create_template.eex", __DIR__))
+    embed_template(:service_create, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_legacy_templates/service/service_create_template.eex", __DIR__))
   rescue
     _ ->
 
@@ -136,7 +136,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Service do
   end
 
   try do
-    embed_template(:service_create_polymorphic, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/service/service_create_polymorphic_template.eex", __DIR__))
+    embed_template(:service_create_polymorphic, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_legacy_templates/service/service_create_polymorphic_template.eex", __DIR__))
   rescue
     _ ->
 
@@ -177,7 +177,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Service do
   end
 
   try do
-    embed_template(:service_update, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/service/service_update_template.eex", __DIR__))
+    embed_template(:service_update, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_legacy_templates/service/service_update_template.eex", __DIR__))
   rescue
     _ ->
 
@@ -216,7 +216,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Service do
   end
 
   try do
-    embed_template(:service_custom, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/service/service_custom_template.eex", __DIR__))
+    embed_template(:service_custom, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_legacy_templates/service/service_custom_template.eex", __DIR__))
   rescue
     _ ->
 
@@ -255,7 +255,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Service do
   end
 
   try do
-    embed_template(:service_delete, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/service/service_delete_template.eex", __DIR__))
+    embed_template(:service_delete, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_legacy_templates/service/service_delete_template.eex", __DIR__))
   rescue
     _ ->
 
@@ -284,7 +284,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Service do
   end
 
   try do
-    embed_template(:service_create_test, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/service/service_create_test_template.eex", __DIR__))
+    embed_template(:service_create_test, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_legacy_templates/service/service_create_test_template.eex", __DIR__))
   rescue
     _ ->
 
@@ -328,7 +328,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Service do
   end
 
   try do
-    embed_template(:service_create_polymorphic_test, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/service/service_create_polymorphic_test_template.eex", __DIR__))
+    embed_template(:service_create_polymorphic_test, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_legacy_templates/service/service_create_polymorphic_test_template.eex", __DIR__))
   rescue
     _ ->
 
@@ -381,7 +381,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Service do
   end
 
   try do
-    embed_template(:service_update_test, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/service/service_update_test_template.eex", __DIR__))
+    embed_template(:service_update_test, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_legacy_templates/service/service_update_test_template.eex", __DIR__))
   rescue
     _ ->
 
@@ -434,7 +434,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Service do
   end
 
   try do
-    embed_template(:service_custom_test, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/service/service_custom_test_template.eex", __DIR__))
+    embed_template(:service_custom_test, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_legacy_templates/service/service_custom_test_template.eex", __DIR__))
   rescue
     _ ->
 
@@ -487,7 +487,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Service do
   end
 
   try do
-    embed_template(:service_delete_test, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/service/service_delete_test_template.eex", __DIR__))
+    embed_template(:service_delete_test, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_legacy_templates/service/service_delete_test_template.eex", __DIR__))
   rescue
     _ ->
 

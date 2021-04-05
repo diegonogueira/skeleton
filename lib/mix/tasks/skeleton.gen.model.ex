@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Skeleton.Gen.Model do
+defmodule Mix.Tasks.SkeletonLegacy.Gen.Model do
   use Mix.Task
   import Macro, only: [camelize: 1, underscore: 1]
   import Mix.Generator
@@ -82,7 +82,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Model do
   # Templates
 
   try do
-    embed_template(:model, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/model/model_template.eex", __DIR__))
+    embed_template(:model, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_legacy_templates/model/model_template.eex", __DIR__))
   rescue
     _ ->
 
@@ -102,7 +102,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Model do
   end
 
   try do
-    embed_template(:migration, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/model/migration_template.eex", __DIR__))
+    embed_template(:migration, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_legacy_templates/model/migration_template.eex", __DIR__))
   rescue
     _ ->
 
@@ -123,7 +123,7 @@ defmodule Mix.Tasks.Skeleton.Gen.Model do
   end
 
   try do
-    embed_template(:model_test, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_templates/model/model_test_template.eex", __DIR__))
+    embed_template(:model_test, from_file: Path.expand("../../../../../lib/mix/tasks/skeleton_legacy_templates/model/model_test_template.eex", __DIR__))
   rescue
     _ ->
 

@@ -1,7 +1,7 @@
-defmodule Skeleton.Resolver.Permission do
+defmodule SkeletonLegacy.Resolver.Permission do
   defmacro __using__(_) do
     quote do
-      import Skeleton.Resolver.Permission
+      import SkeletonLegacy.Resolver.Permission
 
       def get_source_name(_resource), do: nil
 

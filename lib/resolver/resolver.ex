@@ -1,4 +1,4 @@
-defmodule Skeleton.Resolver do
+defmodule SkeletonLegacy.Resolver do
   defstruct helper: nil,
     module: nil,
     action: nil,
@@ -17,10 +17,10 @@ defmodule Skeleton.Resolver do
 
   defmacro __using__(opts) do
     quote do
-      import Skeleton.Resolver
+      import SkeletonLegacy.Resolver
 
       def build(module, action, args, info) do
-        %Skeleton.Resolver{
+        %SkeletonLegacy.Resolver{
           helper: unquote(opts[:helper]),
           module: module,
           action: action,

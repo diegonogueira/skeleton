@@ -1,8 +1,8 @@
-defmodule Skeleton.Controller do
+defmodule SkeletonLegacy.Controller do
   import Plug.Conn
 
   defmacro __using__(_) do
-    alias Skeleton.Controller, as: Ctrl
+    alias SkeletonLegacy.Controller, as: Ctrl
 
     quote do
       def ensure_authenticated(%{halted: true} = conn), do: conn
