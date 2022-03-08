@@ -13,7 +13,7 @@ defmodule SkeletonLegacy.MixProject do
       name: "SkeletonLegacy",
       app: :skeleton_legacy,
       version: @version,
-      elixir: "~> 1.10.3",
+      elixir: ">= 1.10.3",
       package: package(),
       source_url: @url,
       maintainers: @maintainers,
